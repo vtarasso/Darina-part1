@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Магический Свиток Дарины</title>
+<style>
+    body {
+        background-color: #1d1b27;
+        font-family: 'Georgia', serif;
+        color: #fefefe;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    #intro {
+        font-size: 24px;
+        width: 80%;
+        margin: 50px auto;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    #game {
+        opacity: 0;
+        transition: opacity 1s;
+        display: none;
+        text-align: center;
+    }
+
+    #scroll {
+        background: #262237;
+        padding: 20px;
+        border-radius: 12px;
+        border: 3px dashed #6a5acd;
+        transition: 0.6s;
+        margin: 20px auto;
+        width: fit-content;
+        max-width: 600px;
+    }
+
+    #title { margin: 10px; }
+
+    .story {
+        opacity: 0;
+        transition: opacity 1.4s;
+        margin: 8px 0;
+        font-style: italic;
+    }
+    .story.visible { opacity: 1; }
+
+    textarea {
+        width: 360px;
+        height: 130px;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+        font-size: 16px;
+        font-family: monospace;
+        display: block;
+        margin: 10px auto;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        background: #d4b9ff;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    #instruction {
+        margin-top: 15px;
+        font-size: 18px;
+        min-height: 35px;
+        color: #ffd86d;
+    }
+
+    #msg {
+        margin-top: 10px;
+        font-size: 18px;
+        min-height: 30px;
+    }
+
+    .success { color: #76ff92; }
+    .fail { color: #ff7070; }
+</style>
+</head>
+<body>
+
+<div id="intro"></div>
+
+<div id="game">
+    <h1 id="title">Магический Свиток Дарины</h1>
+
+    <div id="scroll">
+        <p id="text">Магия исчезла... Нужно вернуть её с помощью CSS!</p>
+        <div id="story"></div>
+    </div>
+
+    <h3>Напиши CSS-заклинание целиком:</h3>
+
+<style id="dynamic-style"></style>
+    <textarea id="answer" placeholder="например: h1 { color: gold;}"></textarea>
+
+    <button onclick="checkAnswer()">Колдуй ✨</button>
+
+    <div id="instruction"></div>
+    <div id="msg"></div>
+</div>
+
+<script>
+// ===== ПРЕДЫСТОРИЯ =====
+let level = 1;
+let index = 0;
+
+let introText = `
+Дарина…<br><br>
+В далёком цифровом мире теги потеряли свои цвета…<br>
+И только Ты — избранная Стилистка — способна вернуть им волшебство!<br><br>
+Готова ли ты применить силу CSS и спасти веб-Вселенную?
+`;
+
+const introElement = document.getElementById('intro');
+const dynamicStyle = document.getElementById('dynamic-style');
+const storyBox = document.getElementById('story');
+
+function typeIntro() {
+    introElement.innerHTML = introText.substring(0, index);
+    introElement.style.opacity = 1;
+    index++;
+    if (index <= introText.length) {
+        setTimeout(typeIntro, 40);
+    } else {
+        setTimeout(() => {
+            introElement.style.opacity = 0;
+            setTimeout(startGame, 1200);
+        }, 2500);
+    }
+}
+typeIntro();
+
+
+// ===== ИСТОРИЯ УРОВНЕЙ =====
+const storyText = {
+    1: "✨ Магия заголовка пробудилась!",
+    2: "🌌 Фон свитка наполнился чарами!",
+    3: "📢 Голос заголовка усилился!",
+    4: "💧 Текст засиял небесным светом!",
+    5: "👑 Золотая защита свитка активирована!",
+    6: "📦 Свиток обрёл своё место среди элементов!",
+    7: "🧱 Текст стал самостоятельным блоком!",
+    8: "📏 Внутренняя энергия расширилась!",
+    9: "📐 Внешние просторы отодвинулись!",
+    10: "🏰 Размеры свитка восстановлены!"
+};
+
+
+// ===== ЗАПУСК ИГРЫ =====
+function startGame() {
+    introElement.style.display = "none";
+    const game = document.getElementById('game');
+    game.style.display = "block";
+    setTimeout(() => game.style.opacity = 1, 150);
+    showInstruction();
+}
+
+
+// ===== ПОКАЗ ЗАДАНИЯ =====
+function showInstruction() {
+    const instruction = document.getElementById('instruction');
+    const inst = {
+        1: "🎯 Сделай заголовок h1 золотым → gold",
+        2: "🎯 Фон свитка #scroll фиолетовым → purple",
+        3: "🎯 Увеличь заголовок h1 до 30px",
+        4: "🎯 Окрасим абзац в светло-голубой → lightblue",
+        5: "🎯 Добавь золотую рамку для свитка #scroll, толщиной 5px",
+        6: "🎯 Свиток #scroll должен стать <b>inline-block</b>",
+        7: "🎯 Сделай #text <b>block</b> элементом",
+        8: "🎯 Добавь внутренние отступы свитку #scroll 50px со всех сторон",
+        9: "🎯 Добавь свитку #scroll внешний отступ 30px сверху и снизу и auto слева и справа",
+        10: "🎯 Сделай ширину #scroll 600px"
+    };
+    instruction.innerHTML = inst[level] || "";
+}
+
+
+// ===== ПРОВЕРКА ОТВЕТА =====
+function checkAnswer() {
+    const input = document.getElementById('answer')
+        .value.toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const msg = document.getElementById('msg');
+    msg.className = "";
+
+    const tasks = {
+        1: "h1 { color: gold; }",
+        2: "#scroll { background-color: purple; }",
+        3: "h1 { font-size: 30px; }",
+        4: "p { color: lightblue; }",
+        5: "#scroll { border: 5px solid gold; }",
+        6: "#scroll { display: inline-block; }",
+        7: "#text { display: block; }",
+        8: "#scroll { padding: 50px; }",
+        9: "#scroll { margin: 30px auto; }",
+        10: "#scroll { width: 600px; height: auto; }"
+    };
+
+    if (!tasks[level]) {
+        msg.innerHTML = "🌟 Дарина — Величайшая CSS-Стилистка!";
+        msg.className = "success";
+        revealStory("🌈 Свиток полностью восстановлен!");
+        return;
+    }
+
+    if (input === tasks[level]) {
+        dynamicStyle.innerHTML += input;
+        revealStory(storyText[level]);
+        level++;
+        showInstruction();
+        msg.innerHTML = "✨ Заклинание сработало!";
+        msg.className = "success";
+        document.getElementById('answer').value = "";
+    } else {
+        msg.innerHTML = "❌ Неверное заклинание!<br><code>" + tasks[level] + "</code>";
+        msg.className = "fail";
+    }
+}
+
+
+// ===== ДОБАВЛЕНИЕ ТЕКСТА НА СВИТОК =====
+function revealStory(text) {
+    const item = document.createElement("p");
+    item.className = "story";
+    item.innerHTML = text;
+    storyBox.appendChild(item);
+    setTimeout(() => item.classList.add("visible"), 100);
+}
+</script>
+<audio id="bg-music" loop autoplay>
+    <source src="menu_music.mp3" type="audio/mpeg">
+    Ваш браузер не поддерживает аудио.
+</audio>
+</body>
+</html>
